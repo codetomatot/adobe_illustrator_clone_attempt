@@ -1,0 +1,45 @@
+body {
+    background-color: rgb(28,28,29) !important;
+}
+nav {
+    width: 100%;
+    background-color: rgb(77, 77, 77);
+    padding: 15px;
+    display: flex;
+    z-index: 5;
+}
+.wrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto;
+    margin-right: 25px;
+}
+.wrapper img {
+    width: inherit;
+    height: fit-content;
+    cursor: pointer;
+}
+.options-panel {
+    position: absolute;
+    padding: 0.5rem;
+    right: 0;
+    width: 300px;
+    height: 400px;
+    background-color: rgb(34, 37, 41);
+    z-index: 2;
+}
+.options-panel button {
+    background-color: rgb(252, 70, 70);
+    color: #fff;
+    font-size: 18px;
+    font-family: 'adobe-gothic-std';
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    margin-top: 15px;
+    padding: 5px;
+}

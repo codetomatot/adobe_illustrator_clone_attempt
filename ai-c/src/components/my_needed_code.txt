@@ -1,0 +1,375 @@
+// GetData = () => {
+    //     return firebase.firestore()
+    //     .collection("documents")
+    //     .doc(firebase.auth().currentUser.uid)
+    //     .collection("userDocs")
+    //     .orderBy("creation", "asc")
+    //     .get()
+    //     .then((doc) => {
+    //         let custom = doc.docs.map((document) => {
+    //             var data = document.data();
+    //             var id = document.id;
+                
+    //             return { id, data }
+    //         })
+    //         return custom;
+            
+    //     }).catch((err) => {console.error(err)});
+
+    // }
+    // waitForData = async () => {
+    //     let result = await this.GetData();
+    //     return result;
+    // }
+
+    // contain = () => {
+    //     const documentSpecifics = this.waitForData().then((response) => {
+    //         var wrt = document.getElementsByClassName('writeto');
+    //         var results = document.getElementsByClassName('result');
+    //         var icons = document.getElementsByClassName("options");
+    //         for(let i = 0; i < response.length; i++) {
+    //             var id = response[i].id;
+    //             var h = response[i].data.height;
+    //             var w = response[i].data.width;
+    //             var c = response[i].data.docColorType;
+    //             this.setNewFile(id, h, w, c);
+    //             wrt[i].textContent = response[i].data.documentName;
+    //         }
+    //         return response;
+    //     })
+        
+    // }
+
+    // setNewFile = (id, height, width, colorType) => {
+    //     const wrt = document.querySelector(".writeto");
+    //     const fd = document.querySelector("#filtered-docs");
+    //     const icon = document.querySelector(".options");
+    //     const routeTo = document.getElementById("goToDraw");
+    //     var nre = document.createElement('div')
+    //     nre.classList.add("result");
+    //     var wrtEl = document.createElement('p');
+    //     wrtEl.classList.add("writeto");
+    //     var p_img = document.createElement('img');
+    //     p_img.src = `${white}`;
+    //     p_img.className = "previewImg";
+        
+    //     var iC = document.createElement('div');
+    //     iC.classList.add('options');
+    //     var svgEl = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    //     svgEl.setAttribute("width", "100");
+    //     svgEl.setAttribute("height", "100");
+    //     svgEl.setAttribute("fill", "white");
+    //     const cir1 = document.createElementNS('http://www.w3.org/2000/svg', "path");
+    //     cir1.setAttribute('d', 'M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z');
+        
+    //     fd.appendChild(nre);
+    //     nre.appendChild(wrtEl);
+    //     nre.appendChild(p_img);
+    //     nre.appendChild(iC);
+    //     iC.appendChild(svgEl);
+    //     svgEl.appendChild(cir1);
+
+    //     //const { docWidth, docHeight, color, docId } = this.state;
+
+    //     svgEl.onclick = function() {
+    //         var menu = document.createElement('div');
+    //         menu.style.width = "100px";
+    //         menu.style.height = "150px";
+    //         menu.style.position = "relative";
+    //         menu.style.left = "150px";
+    //         menu.style.bottom = "130px";
+    //         menu.style.backgroundColor = "#fff";
+    //         menu.style.borderRadius = "8px";
+    //         menu.style.textAlign = "left";
+
+    //         var btnClose = document.createElement('button');
+    //         btnClose.innerHTML = "X"
+    //         btnClose.style.fontSize = "13px";
+    //         btnClose.style.padding = "0"
+
+    //         var ul = document.createElement('ul');
+    //         ul.style.color = "#000";
+    //         ul.style.listStyle = "none";
+    //         ul.style.marginLeft = "0px";
+    //         ul.style.marginLeft = "-10px";
+    //         ul.style.marginBottom = "10px";
+    //         var li = document.createElement('li');
+    //         li.style.listStyle = "none"
+    //         var dspw = document.createElement('li');
+    //         dspw.innerText = width
+    //         var dsph = document.createElement('li');
+    //         dsph.innerText = height
+    //         var dspc = document.createElement('li');
+    //         dspc.innerText = colorType
+
+    //         var btnDelete = document.createElement('button');
+    //         btnDelete.style.backgroundColor = "#F62D39"
+    //         btnDelete.style.color = "#fff";
+    //         btnDelete.style.fontSize = '15px'
+    //         btnDelete.style.border = "none"
+    //         btnDelete.style.borderRadius = "5px"
+    //         btnDelete.style.padding = "0.5rem"
+    //         btnDelete.innerHTML = "Delete"
+    //         console.log(menu);
+
+    //         li.appendChild(btnDelete);
+    //         ul.appendChild(btnClose);
+    //         ul.appendChild(dspw);
+    //         ul.appendChild(dsph);
+    //         ul.appendChild(dspc);
+    //         ul.appendChild(li);
+    //         menu.appendChild(ul);
+    //         nre.appendChild(menu);
+
+    //         btnClose.onclick = function() {
+    //             nre.removeChild(menu);
+    //         }
+    //         btnDelete.onclick = function() {
+    //             var modalBg = document.createElement('div');
+    //             modalBg.style.display = "grid";
+    //             modalBg.style.placeItems = "center";
+    //             modalBg.style.backgroundColor = "rgba(22,22,22,0.596)"
+    //             modalBg.style.height = "100%"
+    //             modalBg.style.width = "100%"
+    //             modalBg.style.position = "absolute";
+    //             modalBg.style.zIndex = "2"
+
+    //             var modal = document.createElement('div');
+    //             modal.style.backgroundColor = "#3D3F45"
+    //             modal.style.width = "400px";
+    //             modal.style.height = "200px";
+    //             modal.style.borderRadius = "4px";
+    //             modal.style.padding = "1rem";
+    //             modal.style.overflow = "hidden"
+    //             var head = document.createElement('h1');
+    //             var pwarning = document.createElement('p')
+    //             pwarning.innerText = "Are you sure you want to delete this?"
+    //             head.innerHTML = "Delete Document"
+    //             head.style.margin = "0"
+    //             modal.appendChild(head)
+    //             modal.appendChild(pwarning);
+
+
+    //             var modalFooter = document.createElement('footer');
+    //             var modalBtnCancel = document.createElement('button');
+    //             var modalBtnDelete = document.createElement('button');
+    //             modalBg.className = "delmdbg"
+    //             modal.className = "delmd";
+    //             modalFooter.className = "delmdf"
+    //             modalBtnCancel.className = "cmd"
+    //             modalBtnDelete.className = "delmdbtn"
+    //             console.log(modalBg);
+    //             modalBtnCancel.innerHTML = "Close"
+    //             modalBtnDelete.innerHTML = "Delete"
+                
+    //             modalFooter.appendChild(modalBtnCancel);
+    //             modalFooter.appendChild(modalBtnDelete);
+    //             modal.appendChild(modalFooter);
+    //             modalBg.appendChild(modal);
+    //             document.body.appendChild(modalBg);
+
+    //             modalBtnCancel.onclick = function() {
+    //                 document.body.removeChild(modalBg);
+    //             }
+
+    //             modalBtnDelete.onclick = function() {
+    //                 firebase.firestore()
+    //                 .collection("documents")
+    //                 .doc(firebase.auth().currentUser.uid)
+    //                 .collection("userDocs")
+    //                 .doc(id)
+    //                 .delete().then(() => {
+    //                     console.log("document deleted");
+    //                     setTimeout(() => {
+    //                         window.location.reload();
+    //                     }, 1500)
+    //                 })
+    //             }
+    //         }
+
+    //     }
+
+    // }
+
+
+
+
+
+     //illustrator
+
+     // <div className="Ill">
+            //    <div className="bar">
+            //     <nav>
+            //       <ul>
+            //         <li>File</li>
+            //         <li>Edit</li>
+            //         <li>Object</li>
+            //         <li>Type</li>
+            //         <li>Select</li>
+            //         <li>Effect</li>
+            //         <li>View</li>
+            //         <li>Window</li>
+            //         <li>Help</li>
+            //       </ul>
+            //     </nav>
+            //   </div>
+            //   <div className="sidebar">
+            //     <ul>
+            //       <li title="Select"><FaMousePointer /></li>
+            //       <li title="select vertices"><FiMousePointer /></li>
+            //       <li title="magic wand"><ImMagicWand /></li>
+            //       <li title="pen tool"><FaPenNib /></li>
+            //       <li title="text tool"><BiText /></li>
+            //       <li onDoubleClick={this.op} title="rectangle tool (double click for more options/shapes)"><BiRectangle /></li>
+            //         {options ? 
+            //         <div className="sidebar-out">
+            //           <li className="sp-el" style={{fontSize: 15}}><IoEllipseOutline /> Ellipse</li>
+            //           <li className="sp-rr" style={{fontSize: 15}}><BiSquareRounded /> Rounded Rectangle</li>
+            //         </div>
+            //         : null}
+                  
+            //       <li title="gradient tool"><MdGradient /></li>
+            //       <li title="zoom tool"><GiMagnifyingGlass /></li>
+            //       <li title="line tool"><AiOutlineLine /></li>
+            //     </ul>
+                
+            //   </div>
+        
+            //   <div className="mainCanvas">
+            //     <div className="tabs"></div>
+            //     <canvas id="canvas" className="canvas"></canvas>
+            //   </div>
+            // </div>
+
+
+
+
+
+//<Link to={{
+                                    //     pathname: "/illustrator",
+                                    //     state: {
+                                    //         documentName: item.documentName,
+                                    //         width: item.width,
+                                    //         height: item.height,
+                                    //         dcc: item.docColorType,
+                                    //         id: item.id
+                                    //     }
+                                    // }}>
+                                    //     <div className="result">
+                                    //         <p className="writeto" style={{color: '#fff', textDecoration: ''}}>{item.documentName}</p>
+                                    //         {item.screenshot ? 
+                                    //         <img src={item.screenshot} alt="preview" className="previewImg" />
+                                    //         :
+                                    //         <img src={white} alt="default" className="previewImg" /> 
+                                    //         }
+                                    //     </div>
+                                    // </Link>
+
+
+
+var draggable = false;
+            var startX;
+            var startY;
+            var shapes = [
+              {
+                x: 10,
+                y: 100,
+                width: 30,
+                height: 30,
+                fill: "#444444",
+                isDragging: false,
+              },
+              {
+                x: 40,
+                y: 100,
+                radius: 15,
+                fill: "#000",
+                isDragging: false
+              }
+            ];
+            canvas.onmousedown = handleMD;
+            canvas.onmouseup = handleMU;
+            canvas.onmousemove = handleMM;
+            draw();
+
+            function rect(r) {
+              ctx.beginPath();
+              ctx.fillStyle = r.fill;
+              ctx.fillRect(r.x, r.y, r.width, r.height);
+            }
+            function circle(c) {
+              ctx.beginpath();
+              ctx.fillStyle = c.fill;
+              ctx.arc(c.x, c.y, c.radius, 0, Math.PI*2);
+              ctx.closePath();
+              ctx.fill();
+            }
+            function clear() {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            function draw() {
+              clear();
+              for(let i = 0; i < shapes.length; i++) {
+                if(shapes[i].width) {
+                  rect(shapes[i]);
+                } else {
+                  circle(shapes[i]);
+                }
+              }
+            }
+            function handleMD(ev) {
+              ev.preventDefault();
+              ev.stopPropagation();
+              console.log("mousedown")
+              const mx = parseInt(ev.clientX - offsetX);
+              const my = parseInt(ev.clientY - offsetY);
+
+              draggable = false;
+              for(let i = 0; i < shapes.length; i++) {
+                let s = shapes[i];
+                if(s.width) {
+                  if(mx > s.x && mx < s.x + s.width && my > s.y && my < s.y + s.height) {
+                    draggable = true;
+                    s.isDragging = true;
+                  }
+                } else {
+                  var dx = s.x - mx;
+                  var dy = s.y - my;
+                  if(dx * dx + dy * dy < s.r * s.r) {
+                    draggable = true;
+                    s.isDragging = true;
+                  }
+                }
+              }
+              startX =mx;
+              startY = my;
+            }
+
+            function handleMU(ev) {
+              ev.preventDefault();
+              ev.stopPropagation();
+              draggable = false;
+              for(let i = 0; i < shapes.length; i++) {
+                shapes[i].isDragging = false;
+              }
+            }
+            function handleMM(ev) {
+              console.log(ev);
+              if(draggable) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                const mx = parseInt(ev.clientX - offsetX);
+                const my = parseInt(ev.clientY - offsetY);
+                const dx = mx-startX;
+                const dy= mx - startY;
+                for(let i = 0; i < shapes.length; i++) {
+                  if(shapes[i].isDragging) {
+                    shapes[i].x += dx;
+                    shapes[i].y += dy;
+                  }
+                }
+                draw();
+                startX = mx;
+                startY = my;
+              }
+            }
