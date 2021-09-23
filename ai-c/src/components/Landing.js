@@ -34,7 +34,8 @@ class Landing extends React.Component {
             docOptions: false,
             docs: null,
             docDisplayType: false,
-            loaded: false
+            loaded: false,
+            filteredDocs: [],
         }
         this.logout = this.logout.bind(this);
         this.close = this.close.bind(this);
@@ -51,7 +52,6 @@ class Landing extends React.Component {
     
     close = () => {
         this.setState({setup: false});
-        // setTimeout(() => {window.location.reload();}, 1600)
     }
     
 
@@ -109,12 +109,40 @@ class Landing extends React.Component {
         }).catch(() => {
             console.log("failed");
         })
-        // setTimeout(() => { window.location.reload();}, 1500)
     }
 
     createNewFile = () => {
         this.setState({setup: !this.state.setup})
         //this.setNewFile();
+    }
+    fetchDocuments = (search) => {
+        const input = document.getElementById("searchIndex");
+        // console.log(search);
+        firebase.firestore()
+        .collection('documents')
+        .doc(firebase.auth().currentUser.uid)
+        .collection("userDocs")
+        .where('documentName', '>=', input.value)
+        .get()
+        .then((snapshot) => {
+            let docs = snapshot.docs.map((doc) => {
+                const data = doc.data();
+                const docId = doc.id;
+                return { docId, ...data }
+            });
+            // console.log(docs)
+            this.setState({
+                filteredDocs: [docs]
+            })
+            if(input.value === "" || input.value === null) {
+                this.setState({
+                    filteredDocs: [],
+                })
+            } else {
+                console.log(input.value);
+                console.log(this.state.filteredDocs)
+            }
+        })
     }
 
     componentDidMount() {
@@ -125,7 +153,8 @@ class Landing extends React.Component {
     
 
     render() {
-        
+        const { filteredDocs } = this.state;
+        // console.log(filteredDocs)
         return (
             <div className="landpage">
                 <div className="sidenav">
@@ -139,9 +168,8 @@ class Landing extends React.Component {
                     
                     <div className="btn0" onClick={this.createNewFile}>Create New</div>
                     <div className="btn1">Open</div>
-                    <br /><br /><br /><br /><br /><br />
-                    <br /><br /><br /><br /><br /><br /><br /><br />
-                    <button onClick={this.logout} className="btn1" style={{height:"40px"}}>Logout</button>
+                    
+                    <button onClick={this.logout} className="btn1 logout" style={{height:"40px"}}>Logout</button>
                 </div>
     
                 <div className="top-txt-container">
@@ -190,10 +218,10 @@ class Landing extends React.Component {
                         <h3>recent</h3>
                         
                         <button className="layout">
-                            <IoOptions />
+                            <IoOptions style={{display: 'inline'}} />
                         </button>
                         <button className="layout">
-                            <IoGridOutline />
+                            <IoGridOutline style={{display: 'inline'}} />
                         </button>
     
                         <div style={{display: 'inline',
@@ -209,32 +237,42 @@ class Landing extends React.Component {
                         <div style={{display: 'inline', fontSize: '20px', position: 'relative', top: '25px', color: '#fff'}}><RiArrowDownLine /></div>
     
                         <div className="search-docs">
-                            <span>Filter</span><input placeholder="filter recent files" />
+                            <span>Filter</span><input id="searchIndex" placeholder="filter recent files" onChange={(search) => this.fetchDocuments(search)} />
                         </div>
                         <div id="filtered-docs">
-                            {this.props.userDocs.map((item, index) => (
-                                //this.getCurrentCollectionDocuments(item.id),
-                                <Link to={{
-                                    pathname: "/illustrator",
-                                    state: {
-                                        documentName: item.documentName,
-                                        width: item.width,
-                                        height: item.height,
-                                        dcc: item.docColorType,
-                                        id: item.id,
-                                        canvasState: item.canvasState,
-                                    }
-                                }} key={index}>
-                                    <div className="result">
-                                        <p className="writeto" style={{color: '#fff', textDecoration: ''}}>{item.documentName}</p>
-                                        {item.screenshot && item.screenshot !== null ? 
-                                        <img src={item.screenshot} alt="preview" className="previewImg" />
-                                        :
-                                        <img src={white} alt="default" className="previewImg" /> 
-                                        }
-                                    </div>
-                                </Link>
-                            ))}
+                            {filteredDocs.length !== 0 ? 
+                            <div className="result">
+                                {/* {filteredDocs.length > 1} e.g*/}
+                                <p className="writeto">{filteredDocs[0][0].documentName}</p>
+                            </div>
+                            : 
+                            <div className="wf">
+                                {this.props.userDocs.map((item, index) => {
+                                    return (
+                                        <Link to={{
+                                            pathname: "/illustrator",
+                                            state: {
+                                                documentName: item.documentName,
+                                                width: item.width,
+                                                height: item.height,
+                                                dcc: item.docColorType,
+                                                id: item.id,
+                                                canvasState: item.canvasState,
+                                            }
+                                        }} key={index}>
+                                            <div className="result">
+                                                <p className="writeto" style={{color: '#fff', textDecoration: ''}}>{item.documentName}</p>
+                                                {item.screenshot && item.screenshot !== null ? 
+                                                <img src={item.screenshot} alt="preview" className="previewImg" />
+                                                :
+                                                <img src={white} alt="default" className="previewImg" /> 
+                                                }
+                                            </div>
+                                        </Link>
+                                    )
+                                })}
+                            </div>}
+                            
                         </div>
                     </div>
                 </div>
@@ -306,7 +344,10 @@ class Landing extends React.Component {
                                             <option>CMYK</option>
                                         </select>
     
-                                        <button onClick={this.createFileToDb} className="custom-buttons" style={{
+                                        
+    
+                                    </form>
+                                    <button onClick={this.createFileToDb} className="custom-buttons" style={{
                                         position:'absolute',
                                         bottom:'10px',
                                         right:'20px',
@@ -321,8 +362,6 @@ class Landing extends React.Component {
                                         border:'2px solid #f3f3f3',
                                         background:'transparent',
                                         borderRadius:'45px'}}>Close</button>
-    
-                                    </form>
                                 </div>
                             </div>
     

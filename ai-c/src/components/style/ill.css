@@ -52,7 +52,7 @@ body {
 .dropdn-menu {
   position: absolute;
   top: 130px;
-  width: 150px;
+  width: auto;
   height: auto;
   padding: 0.5rem;
   border-radius: 4px;

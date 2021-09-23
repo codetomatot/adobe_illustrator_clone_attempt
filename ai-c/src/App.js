@@ -55,6 +55,8 @@ class App extends React.Component {
 
   render() {
     const { loaded, loggedIn, menu } = this.state;
+    console.log(window.innerHeight)
+    console.log(window.innerWidth)
     if(!loaded) {
       return (
         <Loading />

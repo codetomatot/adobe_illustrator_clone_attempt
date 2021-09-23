@@ -28,7 +28,7 @@ import { BsArrowsMove } from "react-icons/bs";
 import { FcImport } from "react-icons/fc";
 import { FcSimCard } from 'react-icons/fc';
 import { AiOutlineCaretDown } from "react-icons/ai";
-
+import { FcDeleteRow } from "react-icons/fc";
 import { connect } from 'react-redux';
 import { fetchUser, fetchUserDocuments } from "../redux/actions/actions";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -43,6 +43,7 @@ class Illustrator extends React.Component {
             options: false,
             menu: false,
             file: null,
+            fileName: null,
             screenshotURL: null,
             moveTool: false,
             dr_images: [],
@@ -81,6 +82,7 @@ class Illustrator extends React.Component {
       task.then(() => {console.log("File uploaded: ", file.name)})
       this.setState({
         file: URL.createObjectURL(file),
+        fileName: file.name,
       });
       const progress = (transfer) => {
         console.log(`transferred: ${transfer.bytesTransferred}`)
@@ -125,7 +127,7 @@ class Illustrator extends React.Component {
             y: 0,
           }).then(() => {
             setTimeout(() => {
-              window.location.reload()
+              // window.location.reload()
             }, 1500)
           })
         }).catch(() => console.log("there seems to be an error"))
@@ -179,7 +181,7 @@ class Illustrator extends React.Component {
 
     render() {
         const { options, file, dr_images, rectTool, rect, newRect } = this.state;
-
+        console.log(this.state.fileName);
         const handleMD = (ev) => {
           if(newRect.length === 0) {
             console.log("down")
@@ -224,7 +226,11 @@ class Illustrator extends React.Component {
         //   }
         // }
         const toDraw = [...rect, ...newRect];
-        
+
+        const logId = (event) => {
+          console.log(event.target);
+        }
+
         return (
             <div className="Ill">
               {/* <Navbar fileEvent={this.fileChange} currentFile={this.state.file} saveEvent={this.onCapture} ssf={this.state.screenshotURL} /> */}
@@ -245,6 +251,7 @@ class Illustrator extends React.Component {
                             <input type="file" id="importImage" onChange={this.fileChange} style={{width: '1px', height: '1px'}} />
                         </label>
                         <div onClick={this.onCapture}><FcSimCard /> Save</div>
+                        <div onClick={logId}><FcDeleteRow />Delete selected image</div>
                     </div>
                     : null }
                     <Dropdown>
@@ -363,13 +370,18 @@ class Illustrator extends React.Component {
                           )
                         })}
                         {dr_images && dr_images.length !== 0 && dr_images.map((img, index) => (
+                          console.log(this.state),
                           <React.Fragment key={index}>
                             {img.map((image) => (
-                              <DisplayImage src={image.img} width={image.imgWidth} height={image.imgHeight}
+                              <DisplayImage 
+                              src={image.img} 
+                              width={image.imgWidth} 
+                              height={image.imgHeight}
                               x={image.x}
                               y={image.y}
                               parentId={this.props.location.state.id}
                               currentId={image.id} 
+                              fileName={this.state.fileName}
                                />
                             ))}
                           </React.Fragment>

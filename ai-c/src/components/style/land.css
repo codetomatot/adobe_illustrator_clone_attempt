@@ -8,6 +8,7 @@
     height: 1px;
     box-sizing: border-box;
 }
+
 .sidenav {
     text-transform: capitalize;
     height: 100vh;
@@ -22,6 +23,7 @@
     margin-right: 20px;
     color: #fff !important;
 }
+
 .ex-text {
     text-align: left;
     margin-left: 20px;
@@ -72,6 +74,14 @@ p {
     font-weight: 600;
     cursor: pointer;
 }
+.logout {
+    margin-top: 240px;
+}
+@media only screen and (max-height: 800px) {
+    .logout {
+        margin-top: 180px;
+    }
+}
 .btn0:hover {
     background-color: #f3f3f3;
     color: rgb(28,28,29);
@@ -103,16 +113,13 @@ hr {
 
 .all-content {
     display: grid;
-    grid-template-areas: 
+    /* grid-template-areas: 
     'options options options options options new new'
-    'docs docs docs docs docs docs docs';
+    'docs docs docs docs docs docs docs'; */
     grid-template-columns: repeat(2,0fr);
     gap: 10px;
     grid-auto-rows: minmax(140px, auto);
-    position: absolute;
-    left: 300px;
-    top: 200px;
-    width: 100%;
+    /* width: 100%; */
 }
 .canvas-options {
     color: #fff;
@@ -124,15 +131,19 @@ hr {
     display: flex;
     place-content: center;
     text-align: center;
+    position: absolute;
+    left: 300px;
+    top: 200px;
 }
 .canvas-options div {
     margin-top: 100px;
     margin-left: 10px;
     margin-right: 10px;
 }
+
 .new-stuff {
-    grid-template-columns: auto;
-    grid-auto-rows: auto;
+    /* grid-template-columns: auto;
+    grid-auto-rows: auto; */
     width: 300px;
     height: 300px;
     background-color: rgba(65, 65, 65, 0.6);
@@ -140,7 +151,11 @@ hr {
     border-radius: 8px;
     overflow: auto;
     z-index: 1;
+    position: absolute;
+    right: -50px;
+    top: 200px;
 }
+
 .new-stuff img {
     overflow: hidden;
     margin: 0;
@@ -172,17 +187,21 @@ hr {
     cursor: pointer;
 }
 .documents {
-    grid-area: docs;
+    /* grid-area: docs; */
     width: 1125px;
     height: 440px;
+    position: absolute;
+    left: 300px;
+    top: 500px;
 }
+
 .documents h3 {
     color: #fff;
     font-family: 'Poppins';
     font-weight: 400;
     font-size: 17px;
     display: inline;
-    margin-right: 970px;
+    margin-right: 950px;
 }
 .documents .layout {
     display: inline-block;
@@ -203,6 +222,23 @@ hr {
 .documents button:focus {
     border-radius: 5px;
     background-color: rgba(65, 65, 65, 0.5);
+}
+@media only screen and (max-width: 1400px) {
+    .canvas-options {
+        width: 750px;
+        height: 280px;
+    }
+    .new-stuff {
+        width: 280px;
+        height: 280px;
+        right: 10px;
+    }
+    .documents {
+        width: 1000px;
+    }
+    .documents h3 {
+        margin-right: 840px;
+    }
 }
 .documents select {
     background-color: transparent;
@@ -243,6 +279,11 @@ hr {
     display: grid;
     grid-template-columns: repeat(4,0fr);
     gap: 20px;
+}
+#filtered-docs .wf {
+    display: grid;
+    grid-template-columns: repeat(4,0.5fr);
+    gap: 10px;
 }
 .result {
     width: 260px;
