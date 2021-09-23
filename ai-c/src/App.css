@@ -1,5 +1,8 @@
 body {
     background-color: rgb(28,28,29) !important;
+    color: #fff !important;
+    width: 100% !important;
+    height: 100vh !important;
 }
 nav {
     width: 100%;
@@ -43,5 +46,3 @@ nav {
     margin-top: 15px;
     padding: 5px;
 }
-/*testing!!*/
-/*test2!*/
