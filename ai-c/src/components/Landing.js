@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 import "./style/land.css";
 import { BsInfoCircle } from 'react-icons/bs';
-import Logo from "./images/alligator.jpg";
+import Logo from "./images/Group 1ainw.svg";
 import { RiArrowDownLine } from 'react-icons/ri';
 import { IoOptions } from 'react-icons/io5';
 import { IoGridOutline } from 'react-icons/io5';
@@ -58,10 +58,20 @@ class Landing extends React.Component {
     customChosen = () => {
         console.log("custom document selected");
         this.setState({customDoc: !this.state.customDoc});
+        if(this.state.nameInput !== false) {
+            this.setState({nameInput: false});
+        }
     }
     presetOneChosen = () => {
-        console.log();
         this.setState({nameInput: !this.state.nameInput});
+        if(this.state.customDoc !== false) {
+            console.log(true);
+            this.setState({
+                customDoc: false,
+            })
+        } else {
+            console.log(false);
+        }
     }
     createPresetFileToDb = () => {
         console.log(document.getElementById("title-custom").value)
@@ -209,7 +219,7 @@ class Landing extends React.Component {
                         
                     </div>
                     <div className="new-stuff">
-                        <img src={Logo} alt="whats new" />
+                        <img src={Logo} style={{width: '100%', height: '150px'}} alt="whats new" />
                         <h3>check out what's new</h3>
                         <button>View in the app</button>
                     </div>

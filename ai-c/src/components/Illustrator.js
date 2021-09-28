@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { useGesture } from "react-use-gesture";
 import alligator from "./images/alligator.jpg";
 import PinchZoomPan from "react-responsive-pinch-zoom-pan";
-import { Stage, Layer, Image, Rect, Text } from "react-konva";
+import { Stage, Layer, Image, Rect, Text, Circle } from "react-konva";
 import DisplayImage from './DisplayImage';
 // import DrawRect from "./DrawRect";
 //icons
@@ -47,9 +47,9 @@ class Illustrator extends React.Component {
             screenshotURL: null,
             moveTool: false,
             dr_images: [],
-            rectTool: false,
-            rect: [],
-            newRect: [],
+            currentTool: null,
+            shape: [],
+            newShape: [],
         }
         this.stageRef = React.createRef(null);
         this.op = this.op.bind(this);
@@ -127,7 +127,7 @@ class Illustrator extends React.Component {
             y: 0,
           }).then(() => {
             setTimeout(() => {
-              // window.location.reload()
+              window.location.reload()
             }, 1500)
           })
         }).catch(() => console.log("there seems to be an error"))
@@ -173,62 +173,106 @@ class Illustrator extends React.Component {
         this.props.fetchUser();
         this.props.fetchUserDocuments();
         this.updateCanvas();
-        //console.log(this.props)
     }
-    mRect = () => {
-      this.setState({rectTool: !this.state.rectTool})
+
+    toolManager = (selectedTool) => {
+      this.setState({
+        currentTool: selectedTool,
+      })
     }
 
     render() {
-        const { options, file, dr_images, rectTool, rect, newRect } = this.state;
-        console.log(this.state.fileName);
+        const { options, file, dr_images, currentTool, shape, newShape } = this.state;
+        console.log(currentTool);
         const handleMD = (ev) => {
-          if(newRect.length === 0) {
-            console.log("down")
-            const { x, y } = ev.target.getStage().getPointerPosition();
-            this.setState({
-              newRect: [...this.state.newRect, {x, y, width: 0, height: 0, key: "0"}],
-            })
+          const { x, y } = ev.target.getStage().getPointerPosition();
+          if(newShape.length === 0) {
+            switch(currentTool) {
+              case "rect":
+                this.setState({
+                  newShape: [{x, y, width: 0, height: 0, key: "0"}],
+                })
+                break;
+              case "ellipse":
+                this.setState({
+                  newShape: [{x,y,radius:0,key:"0"}]
+                })
+                break;
+            }
+            
           }
         }
-        // const handleMU = (ev) => {
-        //   if(newRect.length === 1) {
-        //     const sx = newRect[0].x;
-        //     const sy = newRect[0].y;
-        //     const { x, y } = ev.target.getStage().getPointerPosition();
-        //     const addToRect = {
-        //       x: sx,
-        //       y: sy,
-        //       width: x - sx,
-        //       height: y - sy,
-        //       key: rect.length + 1,
-        //     }
-        //     this.setState({
-        //       rect: [...rect, addToRect],
-        //       newRect: [],
-        //     })
-        //   }
-        // }
-        // const handleMM = (ev) => {
-        //   if(newRect.length === 1) {
-        //     const sx = newRect[0].x;
-        //     const sy = newRect[0].y;
-        //     const { x, y } = ev.target.getStage().getPointerPosition();
-        //     this.setState({
-        //       newRect: [...newRect, {
-        //         x: sx,
-        //         y: sy,
-        //         width: x - sx,
-        //         height: y - sy,
-        //         key: "0",
-        //       }]
-        //     })
-        //   }
-        // }
-        const toDraw = [...rect, ...newRect];
+        const handleMU = (ev) => {
+          if(newShape.length === 1) {
+            const sx = newShape[0].x;
+            const sy = newShape[0].y;
+            const { x, y } = ev.target.getStage().getPointerPosition();
+            // console.log(newShape);
+            switch(currentTool) {
+              case "rect":
+                const addToShape = {
+                  x: sx,
+                  y: sy,
+                  width: x - sx,
+                  height: y - sy,
+                  key: shape.length + 1,
+                }
+                this.setState({
+                  shape: [...shape, addToShape],
+                  newShape: [],
+                })
+                break;
+              case "ellipse":
+                const addToCircle = {
+                  x: sx,
+                  y: sy,
+                  radius: Math.PI*2,
+                  key: shape.length + 1,
+                }
+                this.setState({
+                  shape: [...shape, addToCircle],
+                  newShape: [],
+                })
+                break;
+            }
+            
+            // console.log(this.state.shape); //should be appending new shapes
+          }
+        }
+        const handleMM = (ev) => {
+          if(newShape.length === 1) {
+            const sx = newShape[0].x;
+            const sy = newShape[0].y;
+            const { x, y } = ev.target.getStage().getPointerPosition();
+            switch(currentTool) {
+              case "rect":
+                this.setState({
+                  newShape: [{
+                    x: sx,
+                    y: sy,
+                    width: x - sx,
+                    height: y - sy,
+                    key: "0",
+                  }]
+                });
+                break;
+              case "ellipse":
+                this.setState({
+                  newShape: [{x: sx, y: sy, radius: Math.PI*2,key:"0"}],
+                });
+                break;
+            }
+          }
+        }
+        const toDraw = [...shape, ...newShape];
 
         const logId = (event) => {
           console.log(event.target);
+        }
+
+        const scale = 1.01;
+        function getDistance() {
+          //
         }
 
         return (
@@ -316,15 +360,11 @@ class Illustrator extends React.Component {
                     <li title="magic wand"><ImMagicWand /></li>
                     <li title="pen tool"><FaPenNib /></li>
                     <li title="text tool"><BiText /></li>
-                    <li onDoubleClick={this.op} onClick={this.mRect} title="rectangle tool (double click for more options/shapes)"><BiRectangle /></li>
+                    <li onClick={() => this.toolManager("rect")} onDoubleClick={this.op} title="rectangle tool (double click for more options/shapes)"><BiRectangle /></li>
                       {options ? 
                       <div className="sidebar-out">
-                        <li className="sp-el" style={{fontSize: 15}}><IoEllipseOutline /> Ellipse</li>
-                        <li className="sp-rr" style={{fontSize: 15}}><BiSquareRounded /> Rounded Rectangle</li>
-                        {/* <li>{this.props.location.state.documentName}</li>
-                        <li>{this.props.location.state.width}</li>
-                        <li>{this.props.location.state.height}</li>
-                        <li>{this.props.location.state.dcc}</li> */}
+                        <li onClick={() => this.toolManager("ellipse")} className="sp-el" style={{fontSize: 15}}><IoEllipseOutline /> Ellipse</li>
+                        <li onClick={() => this.toolManager("rr")} className="sp-rr" style={{fontSize: 15}}><BiSquareRounded /> Rounded Rectangle</li>
                       </div>
                       : null}
 
@@ -339,38 +379,39 @@ class Illustrator extends React.Component {
               <div className="mainCanvas">
                 <div className="tabs"></div>
                   {this.state.moveTool ? 
-                    <div>
-                      <PinchZoomPan
-                      position="center"
-                      maxScale={2}>
-                        <canvas id="canvas" className="canvas"
-                        width={this.props.location.state.width}
-                        height={this.props.location.state.height}></canvas>
-                      </PinchZoomPan>
-                    </div>
+                    <Stage 
+                    style={{backgroundColor: '#fff'}}
+                    width={this.props.location.state.width}
+                    height={this.props.location.state.height}
+                    draggable>
+                      <Layer>
+                        <Rect x={0} y={50} width={10} height={10} fill="red" />
+                      </Layer>
+                    </Stage>
                   : 
                     <Stage
                     style={{backgroundColor: '#fff'}}
                     width={this.props.location.state.width}
                     height={this.props.location.state.height}
                     onMouseDown={handleMD}
-                    // onMouseUp={handleMU}
-                    // onMouseMove={handleMM}
+                    onMouseUp={handleMU}
+                    onMouseMove={handleMM}
                     ref={this.stageRef}
                     >
                       <Layer>
                         {toDraw.map(value => {
-                          return (
-                            <Rect
-                            x={value.x}
-                            y={value.y}
-                            width={value.width}
-                            height={value.height}
-                            fill="red" />
-                          )
+                          switch(currentTool) {
+                            case "rect":
+                              return (
+                                <Rect x={value.x} y={value.y} width={value.width} height={value.height} fill="red"/>
+                              );
+                            case "ellipse":
+                              return (
+                                <Circle x={value.x} y={value.y} radius={value.radius} fill="gray" />
+                              )
+                          }
                         })}
                         {dr_images && dr_images.length !== 0 && dr_images.map((img, index) => (
-                          console.log(this.state),
                           <React.Fragment key={index}>
                             {img.map((image) => (
                               <DisplayImage 

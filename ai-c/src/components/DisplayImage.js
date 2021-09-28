@@ -25,9 +25,7 @@ export default function DisplayImage(props) {
                 imgHeight: imgRef.current.height(),
                 x: imageNodePos.x,
                 y: imageNodePos.y,
-            }).then(() => {
-                console.log("success updating")
-            }).catch((error) => {console.log(error)})
+            })
         }
     }
     function deleteImage() {
