@@ -169,6 +169,16 @@ class Illustrator extends React.Component {
       
     }
 
+    deleteCurrentDocument = () => {
+      firebase.firestore()
+      .collection("documents")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userDocs")
+      .doc(this.props.location.state.id)
+      .delete()
+      .then(() => console.log("deleted"))
+    }
+
     componentDidMount() {
         this.props.fetchUser();
         this.props.fetchUserDocuments();
@@ -226,7 +236,7 @@ class Illustrator extends React.Component {
                 const addToCircle = {
                   x: sx,
                   y: sy,
-                  radius: Math.PI*2,
+                  radius: (x) - Math.PI*2,
                   key: shape.length + 1,
                 }
                 this.setState({
@@ -271,8 +281,46 @@ class Illustrator extends React.Component {
         }
 
         const scale = 1.01;
-        function getDistance() {
-          //
+        function getDistance(point1, point2) {
+          return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
+        }
+        function getCenter(p1,p2) {
+          return {
+            x: (p1.x + p2.x) / 2,
+            y: (p1.y + p2.y) / 2,
+          }
+        }
+
+        let lastCenter = null;
+        let lastDist = 0;
+        const stageRef = this.stageRef;
+        
+        function isTouchEnabled() { 
+          return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0); 
+        }
+        
+        function zoomStage(event) {
+          console.log(event);
+          event.evt.preventDefault();
+          if(stageRef !== undefined) {
+            if (stageRef.current !== null) {
+              const stage = stageRef.current;
+              const oldScale = stage.scaleX();
+              const { x: pointerX, y: pointerY } = stage.getPointerPosition();
+              const mousePointTo = {
+                x: (pointerX - stage.x()) / oldScale,
+                y: (pointerY - stage.y()) / oldScale,
+              };
+              const newScale = event.evt.deltaY > 0 ? oldScale * scale : oldScale / scale;
+              stage.scale({ x: newScale, y: newScale });
+              const newPos = {
+                x: pointerX - mousePointTo.x * newScale,
+                y: pointerY - mousePointTo.y * newScale,
+              }
+              stage.position(newPos);
+              stage.batchDraw();
+            }
+          }
         }
 
         return (
@@ -296,6 +344,7 @@ class Illustrator extends React.Component {
                         </label>
                         <div onClick={this.onCapture}><FcSimCard /> Save</div>
                         <div onClick={logId}><FcDeleteRow />Delete selected image</div>
+                        <div onClick={this.deleteCurrentDocument}>Delete</div>
                     </div>
                     : null }
                     <Dropdown>
@@ -383,7 +432,9 @@ class Illustrator extends React.Component {
                     style={{backgroundColor: '#fff'}}
                     width={this.props.location.state.width}
                     height={this.props.location.state.height}
-                    draggable>
+                    draggable={!isTouchEnabled()}
+                    onWheel={zoomStage}
+                    ref={this.stageRef}>
                       <Layer>
                         <Rect x={0} y={50} width={10} height={10} fill="red" />
                       </Layer>
@@ -396,7 +447,6 @@ class Illustrator extends React.Component {
                     onMouseDown={handleMD}
                     onMouseUp={handleMU}
                     onMouseMove={handleMM}
-                    ref={this.stageRef}
                     >
                       <Layer>
                         {toDraw.map(value => {
