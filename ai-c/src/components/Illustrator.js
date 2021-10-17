@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { useGesture } from "react-use-gesture";
 import alligator from "./images/alligator.jpg";
 import PinchZoomPan from "react-responsive-pinch-zoom-pan";
-import { Stage, Layer, Image, Rect, Text, Circle } from "react-konva";
+import { Stage, Layer, Image, Rect, Text, Circle, Transformer } from "react-konva";
 import DisplayImage from './DisplayImage';
 // import DrawRect from "./DrawRect";
 //icons
@@ -31,7 +31,6 @@ import { AiOutlineCaretDown } from "react-icons/ai";
 import { FcDeleteRow } from "react-icons/fc";
 import { connect } from 'react-redux';
 import { fetchUser, fetchUserDocuments } from "../redux/actions/actions";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import firebase from "../firebase-config";
 require("firebase/firestore");
 require("firebase/firebase-storage");
@@ -90,9 +89,11 @@ class Illustrator extends React.Component {
       const completedTask = () => {
         task.snapshot.ref.getDownloadURL()
         .then((snapshot) => {
-          if(this.stageRef !== null) {
+          if(this.stageRef.current !== null) {
             var uri = this.stageRef.current.toDataURL();
             saveImageData(snapshot, uri);
+          } else {
+            saveImageData(snapshot);
           }
           console.log(snapshot);
         })
@@ -103,6 +104,7 @@ class Illustrator extends React.Component {
       task.on("state_changed", progress, taskError, completedTask);
 
       const saveImageData = (downloadURL, dataURL) => {
+        dataURL = dataURL || null;
         firebase.firestore()
         .collection("documents")
         .doc(firebase.auth().currentUser.uid)
@@ -143,9 +145,6 @@ class Illustrator extends React.Component {
 
     updateCanvas = () => {
       const docId = this.props.location.state.id;
-      // const canvas = document.getElementById("canvas")
-      // const c2d = CanvasRenderingContext2D.prototype;
-      // const ctx = canvas.getContext('2d');
 
       firebase.firestore()
       .collection("documents")
@@ -189,6 +188,11 @@ class Illustrator extends React.Component {
       this.setState({
         currentTool: selectedTool,
       })
+    }
+
+    
+    makeOptions = (event) => {
+      console.log(event);
     }
 
     render() {
@@ -281,16 +285,6 @@ class Illustrator extends React.Component {
         }
 
         const scale = 1.01;
-        function getDistance(point1, point2) {
-          return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
-        }
-        function getCenter(p1,p2) {
-          return {
-            x: (p1.x + p2.x) / 2,
-            y: (p1.y + p2.y) / 2,
-          }
-        }
-
         let lastCenter = null;
         let lastDist = 0;
         const stageRef = this.stageRef;
@@ -453,7 +447,13 @@ class Illustrator extends React.Component {
                           switch(currentTool) {
                             case "rect":
                               return (
-                                <Rect x={value.x} y={value.y} width={value.width} height={value.height} fill="red"/>
+                                <Rect x={value.x} y={value.y} width={value.width} height={value.height} 
+                                fill="red"
+                                onContextMenu={this.makeOptions}
+                                />
+                                // <Transformer>
+                                //   <Rect x={value.x} y={value.y} width={value.width} height={value.height} fill="red"/>
+                                // </Transformer>
                               );
                             case "ellipse":
                               return (
@@ -473,6 +473,7 @@ class Illustrator extends React.Component {
                               parentId={this.props.location.state.id}
                               currentId={image.id} 
                               fileName={this.state.fileName}
+                              onContextMenu={this.makeOptions}
                                />
                             ))}
                           </React.Fragment>
@@ -505,11 +506,3 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Illustrator);
-
-
-
-// we also can save uri as file
-// but in the demo on Konva website it will not work
-// because of iframe restrictions
-// but feel free to use it in your apps:
-// downloadURI(uri, 'stage.png');
