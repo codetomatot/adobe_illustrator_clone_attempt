@@ -12,8 +12,8 @@ export default function MainRoutes(props) {
         <Switch>
             <Route exact path="/illustrator" component={Illustrator} />
             <Route exact path="/" component={Landing} />
-            <Route exact path="/dp" component={DisplayImage} />
-            <Route exact path="/dr" component={DrawRect} />
+            <Route exact path="/dp" component={DisplayImage} /> //testing purposes
+            <Route exact path="/dr" component={DrawRect} /> //testing purposes
         </Switch>
     )
 }
