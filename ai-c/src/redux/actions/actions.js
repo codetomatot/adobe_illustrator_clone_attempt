@@ -43,35 +43,3 @@ export const fetchUserDocuments = () => {
     })
 }
 
-// export const fetchCanvasData = (docId) => {
-//     return ((dispatch) => {
-//         firebase.firestore()
-//         .collection("documents")
-//         .doc(firebase.auth().currentUser.uid)
-//         .collection("userDocs")
-//         .doc(docId)
-//         .collection("imports")
-//         .onSnapshot((snapshot) => {
-//             let cd = snapshot.docs.map((canvi) => {
-//                 var dat = canvi.data();
-//                 return dat;
-//             })
-//             // console.log(cd)
-//             for(let i = 0; i < cd.length; i++) {
-//                 if(cd.lenth === 0 || cd[i] === "" || cd[i] === []) {
-//                     console.log("no??")
-//                 } else {
-//                     dispatch({
-//                         type: CANVAS_DATA,
-//                         canvasData: cd[i],
-//                     })
-//                 }
-//             }
-//             // dispatch({
-//             //     type: CANVAS_DATA,
-//             //     canvasData: cd
-//             // })
-//         })
-
-//     })
-// }
