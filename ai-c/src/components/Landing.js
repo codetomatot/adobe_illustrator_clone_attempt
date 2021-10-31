@@ -158,7 +158,6 @@ class Landing extends React.Component {
     componentDidMount() {
         this.props.fetchUser();
         this.props.fetchUserDocuments();
-        // this.waitForData();
     }
     
 
@@ -397,10 +396,8 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchUser: () => dispatch(fetchUser()),
         fetchUserDocuments: () => dispatch(fetchUserDocuments()),
-        //fetchCanvasData: () => dispatch(fetchCanvasData()),
     }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Landing);
 
-//August 29, 2021 <-- catastrophic failure day
